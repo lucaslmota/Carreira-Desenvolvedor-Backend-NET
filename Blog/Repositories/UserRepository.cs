@@ -1,59 +1,51 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using Blog.Models;
-using Dapper.Contrib.Extensions;
+using Dapper;
 using Microsoft.Data.SqlClient;
 
 namespace Blog.Repositories
 {
-    public class UserRepository
+    public class UserRepository : Repository<User>
     {
         private readonly SqlConnection _connection;
-
-        public UserRepository(SqlConnection connection)
+        public UserRepository(SqlConnection connection) : base(connection)
         {
             _connection = connection;
         }
-        public IEnumerable<User> GetAll()
+
+        public List<User> GetWithRoles()
         {
-            return _connection.GetAll<User>();
-        }
+            var query = @"
+                SELECT
+                    [User].*,
+                    [Role].*
+                FROM
+                    [User]
+                    LEFT JOIN [UserRole] ON [UserRole].[UserId] = [User].[Id]
+                    LEFT JOIN [Role] ON [UserRole].[RoleId] = [Role].[Id]";
 
-        public User Get(int id)
-        {
-            return _connection.Get<User>(id);
-        }
+            var users = new List<User>();
 
-        public void Create(User user)
-        {
-            user.Id = 0;
-            _connection.Insert<User>(user);
-        }
+            var items = _connection.Query<User, Role, User>(
+                query,
+                (user, role) =>
+                {
+                    var usr = users.FirstOrDefault(x => x.Id == user.Id);
+                    if (usr == null)
+                    {
+                        usr = user;
+                        if (role != null)
+                            usr.Roles.Add(role);
+                        users.Add(usr);
+                    }
+                    else
+                        usr.Roles.Add(role);
 
-        public void Update(User user)
-        {
-            if (user.Id != 0)
-            {
-                _connection.Update<User>(user);
-            }
-        }
+                    return user;
+                }, splitOn: "Id");
 
-        public void Delete(User user)
-        {
-            if (user.Id != 0)
-            {
-                _connection.Delete<User>(user);
-            }
-        }
-
-        public void Delete(int id)
-        {
-            if (id != 0)
-                return;
-
-            var user = _connection.Get<User>(id);
-            _connection.Delete<User>(user);
-
+            return users;
         }
     }
 }
