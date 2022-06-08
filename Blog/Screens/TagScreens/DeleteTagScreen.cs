@@ -26,7 +26,7 @@ namespace Blog.Screens.TagScreens
             {
                 var repository = new Repository<Tag>(Database.Connection);
                 repository.Delete(id);
-                Console.WriteLine("Tag exluída com sucesso!");
+                Console.WriteLine("Tag excluída com sucesso!");
             }
             catch (Exception ex)
             {
