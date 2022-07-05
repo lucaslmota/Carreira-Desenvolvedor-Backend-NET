@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/APIshop.csproj",
+                "${workspaceFolder}/APITeste.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/APIshop.csproj",
+                "${workspaceFolder}/APITeste.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -33,7 +33,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/APIshop.csproj"
+                "${workspaceFolder}/APITeste.csproj"
             ],
             "problemMatcher": "$msCompile"
         }

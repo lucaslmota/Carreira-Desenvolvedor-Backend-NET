@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace APIshop.Models
+namespace APITeste.Models
 {
     public class Category
     {
